@@ -337,3 +337,76 @@ CREATE TABLE activity_logs (
 
 CREATE INDEX idx_activity_user
 ON activity_logs(user_id);
+
+-- ==========================================
+-- BOOKING OVERLAP PREVENTION
+-- ==========================================
+
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
+ALTER TABLE bookings
+ADD COLUMN booking_period tstzrange;
+
+
+ALTER TABLE bookings
+ADD CONSTRAINT no_booking_overlap
+EXCLUDE USING gist (
+  asset_id WITH =,
+  booking_period WITH &&
+);
+
+-- ==========================================
+-- AUTH PROFILE TRIGGER
+-- ==========================================
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (
+    id,
+    email,
+    full_name
+  )
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(
+      NEW.raw_user_meta_data->>'full_name',
+      'New User'
+    )
+  );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION public.handle_new_user();
+
+-- ==========================================
+-- BOOKING PERIOD TRIGGER
+-- ==========================================
+
+CREATE OR REPLACE FUNCTION set_booking_period()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.booking_period :=
+    tstzrange(
+      (NEW.booking_date + NEW.start_time)::timestamptz,
+      (NEW.booking_date + NEW.end_time)::timestamptz,
+      '[)'
+    );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER booking_period_trigger
+BEFORE INSERT OR UPDATE ON bookings
+FOR EACH ROW
+EXECUTE FUNCTION set_booking_period();
+
