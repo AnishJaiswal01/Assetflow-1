@@ -7,6 +7,10 @@ from app.allocations.services import (
     create_allocation,
     return_allocation
 )
+from app.allocations.schemas import (
+    AllocationCreate,
+    AllocationResponse
+)
 
 router = APIRouter(
     prefix="/allocations",
@@ -22,9 +26,15 @@ def create_new_allocation(
     return create_allocation(db, allocation)
 
 
-@router.patch("/{allocation_id}/return")
+@router.patch(
+    "/{allocation_id}/return",
+    response_model=AllocationResponse
+)
 def return_asset(
     allocation_id: int,
     db: Session = Depends(get_db)
 ):
-    return return_allocation(db, allocation_id)
+    return return_allocation(
+        db,
+        allocation_id
+    )

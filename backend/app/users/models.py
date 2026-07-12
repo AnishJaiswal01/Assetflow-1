@@ -4,8 +4,7 @@ from sqlalchemy import (
     String,
     Text,
     DateTime,
-    ForeignKey,
-    Enum
+    ForeignKey
 )
 
 from sqlalchemy.dialects.postgresql import UUID
@@ -34,7 +33,10 @@ class Profile(Base):
 
     phone = Column(String)
 
-    role = Column(String, nullable=False)
+    role = Column(
+        String,
+        nullable=False
+    )
 
     department_id = Column(
         BigInteger,
