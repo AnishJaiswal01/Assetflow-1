@@ -1,20 +1,19 @@
 from pydantic import BaseModel
-from uuid import UUID
 from typing import Optional
 
 
-class AssetCreate(BaseModel):
-    name: str
-    category_id: UUID
-    notes: Optional[str] = None
-
-
 class AssetOut(BaseModel):
-    id: UUID
+    id: int
+    asset_tag: str
     name: str
-    category_id: UUID
+
+    category: str
+    department: Optional[str]
+
+    purchaseDate: Optional[str]
+
     status: str
-    notes: Optional[str]
+    updated: str
 
     class Config:
         from_attributes = True

@@ -11,6 +11,7 @@ from sqlalchemy import (
 )
 
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 from app.db.session import Base
 from app.assets.enums import AssetStatus, AssetCondition
@@ -81,3 +82,6 @@ class Asset(Base):
         DateTime(timezone=True),
         server_default=func.now()
     )
+
+    category = relationship("AssetCategory")
+    department = relationship("Department")

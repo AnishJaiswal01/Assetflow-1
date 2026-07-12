@@ -2,8 +2,8 @@ const Table = ({ columns, rows, emptyState, stickyHeader = false, getRowClassNam
   if (rows.length === 0) return emptyState;
 
   return (
-    <div className={stickyHeader ? "max-h-[560px] overflow-auto" : "overflow-x-auto"}>
-      <table className="w-full min-w-[720px] text-left">
+    <div className={stickyHeader ? "max-h-140 overflow-auto" : "overflow-x-auto"}>
+      <table className="w-full min-w-180 text-left">
         <thead className={`border-b border-slate-200 bg-slate-50/80 ${stickyHeader ? "sticky top-0 z-10 backdrop-blur" : ""}`}>
           <tr>
             {columns.map((column) => (

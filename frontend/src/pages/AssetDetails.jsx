@@ -70,7 +70,7 @@ const AssetDetails = () => {
 
   if (!asset) {
     return (
-      <div className="flex min-h-[480px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-white px-6 text-center shadow-sm">
+      <div className="flex min-h-120 flex-col items-center justify-center rounded-xl border border-slate-200 bg-white px-6 text-center shadow-sm">
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-lg font-semibold text-slate-500">?</span>
         <h1 className="mt-4 text-xl font-semibold text-slate-900">Asset not found</h1>
         <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">The asset record you&apos;re looking for may have been removed or is not available in the current inventory.</p>

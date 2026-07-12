@@ -6,46 +6,68 @@ import Snackbar from "../components/ui/Snackbar";
 import StatusBadge from "../components/ui/StatusBadge";
 import Table from "../components/ui/Table";
 
-const assets = [
-  { id: "AF-1001", name: "MacBook Pro 14-inch", category: "Computing", department: "Engineering", assignedTo: "Priya Shah", purchaseDate: "12 Jan 2025", status: "Assigned", updated: "12 min ago" },
-  { id: "AF-1002", name: "ThinkPad T14 Gen 4", category: "Computing", department: "Field Operations", assignedTo: "Daniel Moore", purchaseDate: "03 Mar 2025", status: "Assigned", updated: "38 min ago" },
-  { id: "AF-1003", name: "Epson EB-FH06 Projector", category: "Audio & Visual", department: "Facilities", assignedTo: "Unassigned", purchaseDate: "18 Nov 2024", status: "Maintenance", updated: "2 hrs ago" },
-  { id: "AF-1004", name: "Dell UltraSharp 27", category: "Displays", department: "Design", assignedTo: "Aditi Rao", purchaseDate: "22 Feb 2025", status: "Assigned", updated: "Yesterday" },
-  { id: "AF-1005", name: "Logitech Rally Bar Mini", category: "Audio & Visual", department: "Facilities", assignedTo: "Unassigned", purchaseDate: "07 Sep 2024", status: "Available", updated: "Yesterday" },
-  { id: "AF-1006", name: "iPhone 15 Pro", category: "Mobile", department: "Sales", assignedTo: "Meera Nair", purchaseDate: "15 Apr 2025", status: "Assigned", updated: "2 days ago" },
-  { id: "AF-1007", name: "Herman Miller Sayl", category: "Furniture", department: "People Operations", assignedTo: "Unassigned", purchaseDate: "21 Jun 2023", status: "Available", updated: "3 days ago" },
-  { id: "AF-1008", name: "HP EliteBook 840", category: "Computing", department: "Finance", assignedTo: "Rohan Mehta", purchaseDate: "08 Aug 2023", status: "Retired", updated: "5 days ago" },
-];
-
-const categories = ["All categories", ...new Set(assets.map((asset) => asset.category))];
-const departments = ["All departments", ...new Set(assets.map((asset) => asset.department))];
-const statuses = ["All statuses", "Available", "Assigned", "Maintenance", "Retired"];
+import { getAssets } from "../services/asset.service";
 
 const Assets = () => {
   const navigate = useNavigate();
+
+  const [assets, setAssets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All categories");
   const [department, setDepartment] = useState("All departments");
   const [status, setStatus] = useState("All statuses");
+
   const [page, setPage] = useState(1);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [snackbar, setSnackbar] = useState("");
+
   const pageSize = 5;
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => setIsLoading(false), 550);
-    return () => window.clearTimeout(timeoutId);
+    getAssets()
+      .then((data) => {
+        setAssets(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsLoading(false);
+      });
   }, []);
 
-  useEffect(() => {
-    if (!snackbar) return undefined;
-    const timeoutId = window.setTimeout(() => setSnackbar(""), 4000);
-    return () => window.clearTimeout(timeoutId);
-  }, [snackbar]);
+const categories = [
+  "All categories",
+  ...new Set(assets.map((asset) => asset.category))
+];
+
+const departments = [
+  "All departments",
+  ...new Set(assets.map((asset) => asset.department))
+];
+
+const statuses = ["All statuses", "available", "assigned", "maintenance", "retired"];
+
+useEffect(() => {
+  const timeoutId = window.setTimeout(() => setIsLoading(false), 550);
+  return () => window.clearTimeout(timeoutId);
+}, []);
+
+useEffect(() => {
+  if (!snackbar) return undefined;
+
+  const timeoutId = window.setTimeout(() => setSnackbar(""), 4000);
+
+  return () => window.clearTimeout(timeoutId);
+}, [snackbar]);
 
   const filteredAssets = useMemo(() => assets.filter((asset) => {
-    const matchesQuery = Object.values(asset).some((value) => value.toLowerCase().includes(query.trim().toLowerCase()));
+    const matchesQuery = Object.values(asset).some((value) =>
+    String(value ?? "")
+        .toLowerCase()
+        .includes(query.trim().toLowerCase())
+);
     return matchesQuery && (category === "All categories" || asset.category === category) && (department === "All departments" || asset.department === department) && (status === "All statuses" || asset.status === status);
   }), [query, category, department, status]);
   const totalPages = Math.max(1, Math.ceil(filteredAssets.length / pageSize));
@@ -55,9 +77,9 @@ const Assets = () => {
   const columns = [
     { key: "id", label: "Asset ID", render: (asset) => <span className="font-mono text-xs font-semibold text-slate-700">{asset.id}</span> },
     { key: "name", label: "Asset name", render: (asset) => <span className="font-medium text-slate-900">{asset.name}</span> },
+    { key: "asset_tag", label: "Asset Tag" },
     { key: "category", label: "Category" },
     { key: "department", label: "Department" },
-    { key: "assignedTo", label: "Assigned to" },
     { key: "purchaseDate", label: "Purchase date" },
     { key: "status", label: "Status", render: (asset) => <StatusBadge status={asset.status} /> },
     { key: "updated", label: "Last updated" },
