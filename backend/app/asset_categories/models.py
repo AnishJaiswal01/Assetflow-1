@@ -10,8 +10,8 @@ from sqlalchemy.sql import func
 from app.db.session import Base
 
 
-class Department(Base):
-    __tablename__ = "departments"
+class AssetCategory(Base):
+    __tablename__ = "asset_categories"
 
     id = Column(BigInteger, primary_key=True)
 

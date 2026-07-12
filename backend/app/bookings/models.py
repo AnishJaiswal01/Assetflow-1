@@ -42,8 +42,11 @@ class Booking(Base):
     purpose = Column(Text)
 
     status = Column(
-        Enum(BookingStatus),
-        default=BookingStatus.PENDING
+        Enum(
+            BookingStatus,
+            values_callable=lambda enum: [e.value for e in enum]
+        ),
+        default=BookingStatus.PENDING.value
     )
 
     approved_by = Column(
