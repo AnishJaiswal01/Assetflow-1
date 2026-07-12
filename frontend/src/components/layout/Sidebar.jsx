@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 const navigation = [
-  { label: "Dashboard", to: "/", icon: Gauge, end: true },
+  { label: "Dashboard", to: "/dashboard", icon: Gauge, end: true },
   { label: "Organization Setup", to: "/organization", icon: Landmark },
   { label: "Assets", to: "/assets", icon: Boxes },
   { label: "Allocation & Transfer", to: "/allocation", icon: Repeat2 },
@@ -27,7 +27,7 @@ const Sidebar = () => {
   return (
     <div className="m-3 flex h-[calc(100%-1.5rem)] flex-col rounded-2xl border border-white/80 bg-white/75 px-3 py-5 shadow-[0_8px_30px_rgb(15_23_42/0.06)] backdrop-blur-xl">
       <NavLink
-        to="/"
+        to="/dashboard"
         className="mb-8 flex items-center gap-3 rounded-xl px-3 py-2 transition-colors hover:bg-white/80"
       >
         <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white shadow-sm">

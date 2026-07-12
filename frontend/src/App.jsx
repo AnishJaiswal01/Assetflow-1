@@ -10,13 +10,15 @@ import Maintenance from "./pages/Maintenance";
 import Audit from "./pages/Audit";
 import Reports from "./pages/Reports";
 import Notifications from "./pages/Notifications";
+import Login from "./pages/Login";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
+        <Route path="/" element={<Login />} />
+        <Route element={<DashboardLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="organization" element={<Departments />} />
           <Route path="assets" element={<Assets />} />
           <Route path="assets/:assetId" element={<AssetDetails />} />
