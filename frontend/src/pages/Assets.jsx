@@ -47,6 +47,10 @@ const departments = [
   ...new Set(assets.map((asset) => asset.department))
 ];
 
+console.log("ASSETS", assets);
+console.log("CATEGORIES", categories);
+console.log("DEPARTMENTS", departments);
+
 const statuses = ["All statuses", "available", "assigned", "maintenance", "retired"];
 
 useEffect(() => {
@@ -62,14 +66,25 @@ useEffect(() => {
   return () => window.clearTimeout(timeoutId);
 }, [snackbar]);
 
-  const filteredAssets = useMemo(() => assets.filter((asset) => {
-    const matchesQuery = Object.values(asset).some((value) =>
-    String(value ?? "")
-        .toLowerCase()
-        .includes(query.trim().toLowerCase())
-);
-    return matchesQuery && (category === "All categories" || asset.category === category) && (department === "All departments" || asset.department === department) && (status === "All statuses" || asset.status === status);
-  }), [query, category, department, status]);
+  const filteredAssets = useMemo(
+    () =>
+      assets.filter((asset) => {
+        const matchesQuery = Object.values(asset).some((value) =>
+          String(value ?? "")
+            .toLowerCase()
+            .includes(query.trim().toLowerCase())
+        );
+
+        return (
+          matchesQuery &&
+          (category === "All categories" || asset.category === category) &&
+          (department === "All departments" || asset.department === department) &&
+          (status === "All statuses" || asset.status === status)
+        );
+      }),
+    [assets, query, category, department, status]
+  );
+
   const totalPages = Math.max(1, Math.ceil(filteredAssets.length / pageSize));
   const pageRows = filteredAssets.slice((page - 1) * pageSize, page * pageSize);
   const resetFilters = () => { setQuery(""); setCategory("All categories"); setDepartment("All departments"); setStatus("All statuses"); setPage(1); };

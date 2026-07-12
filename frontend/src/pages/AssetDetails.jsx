@@ -5,6 +5,7 @@ import Modal from "../components/ui/Modal";
 import Snackbar from "../components/ui/Snackbar";
 import StatusBadge from "../components/ui/StatusBadge";
 import Table from "../components/ui/Table";
+import { getAsset } from "../services/asset.service";
 
 const assetProfiles = [
   { id: "AF-1001", name: "MacBook Pro 14-inch", status: "Assigned", category: "Computing", department: "Engineering", assignedTo: "Priya Shah", purchaseDate: "12 January 2025", warrantyExpiry: "12 January 2028", vendor: "Apple India", serialNumber: "C02X7K9JMD6T", location: "Bengaluru HQ · Floor 4" },
@@ -43,10 +44,23 @@ const activity = [
 
 const AssetDetails = () => {
   const navigate = useNavigate();
-  const { assetId = "AF-1001" } = useParams();
-  const asset = assetProfiles.find((candidate) => candidate.id === assetId);
+  const { assetId } = useParams();
+  const [asset, setAsset] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [snackbar, setSnackbar] = useState("");
+
+  useEffect(() => {
+    getAsset(assetId)
+      .then((data) => {
+        setAsset(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsLoading(false);
+      });
+  }, [assetId]);
 
   useEffect(() => {
     if (!snackbar) return undefined;
@@ -67,6 +81,11 @@ const AssetDetails = () => {
     { key: "purpose", label: "Purpose" },
     { key: "status", label: "Status", render: (row) => <StatusBadge status={row.status === "Active" ? "Assigned" : "Inactive"} /> },
   ];
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
 
   if (!asset) {
     return (
