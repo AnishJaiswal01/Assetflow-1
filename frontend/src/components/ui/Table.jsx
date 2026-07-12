@@ -1,10 +1,10 @@
-const Table = ({ columns, rows, emptyState }) => {
+const Table = ({ columns, rows, emptyState, stickyHeader = false }) => {
   if (rows.length === 0) return emptyState;
 
   return (
-    <div className="overflow-x-auto">
+    <div className={stickyHeader ? "max-h-[560px] overflow-auto" : "overflow-x-auto"}>
       <table className="w-full min-w-[720px] text-left">
-        <thead className="border-b border-slate-200 bg-slate-50/80">
+        <thead className={`border-b border-slate-200 bg-slate-50/80 ${stickyHeader ? "sticky top-0 z-10 backdrop-blur" : ""}`}>
           <tr>
             {columns.map((column) => (
               <th key={column.key} scope="col" className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
