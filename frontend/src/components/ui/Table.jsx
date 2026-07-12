@@ -1,4 +1,4 @@
-const Table = ({ columns, rows, emptyState, stickyHeader = false }) => {
+const Table = ({ columns, rows, emptyState, stickyHeader = false, getRowClassName, onRowClick }) => {
   if (rows.length === 0) return emptyState;
 
   return (
@@ -15,7 +15,7 @@ const Table = ({ columns, rows, emptyState, stickyHeader = false }) => {
         </thead>
         <tbody className="divide-y divide-slate-100 bg-white">
           {rows.map((row) => (
-            <tr key={row.id} className="transition-colors hover:bg-slate-50/80">
+            <tr key={row.id} onClick={() => onRowClick?.(row)} className={`transition-colors hover:bg-slate-50/80 ${onRowClick ? "cursor-pointer" : ""} ${getRowClassName?.(row) ?? ""}`}>
               {columns.map((column) => (
                 <td key={column.key} className="px-5 py-4 text-sm text-slate-600">
                   {column.render ? column.render(row) : row[column.key]}
