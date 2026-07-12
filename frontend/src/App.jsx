@@ -7,6 +7,9 @@ import AssetDetails from "./pages/AssetDetails";
 import Allocations from "./pages/Allocations";
 import Bookings from "./pages/Bookings";
 import Maintenance from "./pages/Maintenance";
+import Audit from "./pages/Audit";
+import Reports from "./pages/Reports";
+import Notifications from "./pages/Notifications";
 
 export default function App() {
   return (
@@ -20,6 +23,9 @@ export default function App() {
           <Route path="allocation" element={<Allocations />} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="maintenance" element={<Maintenance />} />
+          <Route path="audit" element={<Audit />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
       </Routes>
     </BrowserRouter>
