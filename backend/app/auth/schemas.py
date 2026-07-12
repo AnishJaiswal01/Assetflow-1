@@ -1,23 +1,13 @@
-from pydantic import BaseModel
-from uuid import UUID
-from typing import Optional
+from pydantic import BaseModel, EmailStr
 
-class SignupRequest(BaseModel):
-    email: str
-    password: str
-    full_name: str
-
-class LoginRequest(BaseModel):
-    email: str
+class UserLogin(BaseModel):
+    email: EmailStr
     password: str
 
-class UserLoginData(BaseModel):
-    id: UUID
-    email: str
-    role: str
-    department_id: Optional[UUID] = None
+class UserSignup(UserLogin):
+    pass
 
-class TokenResponse(BaseModel):
+class Token(BaseModel):
     access_token: str
-    token_type: str = "bearer"
-    user: UserLoginData
+    token_type: str
+    user: dict

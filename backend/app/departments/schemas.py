@@ -1,15 +1,17 @@
-from pydantic import BaseModel, ConfigDict
-from uuid import UUID
-from datetime import datetime
+from pydantic import BaseModel, UUID4
 from typing import Optional
+from datetime import datetime
 
-class DepartmentCreate(BaseModel):
+class DepartmentBase(BaseModel):
     name: str
+    description: Optional[str] = None
 
-class DepartmentOut(BaseModel):
-    id: UUID
-    name: str
-    head_user_id: Optional[UUID] = None
+class DepartmentCreate(DepartmentBase):
+    pass
+
+class DepartmentResponse(DepartmentBase):
+    id: UUID4
     created_at: datetime
-    
-    model_config = ConfigDict(from_attributes=True)
+
+    class Config:
+        from_attributes = True

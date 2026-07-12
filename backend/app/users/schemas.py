@@ -1,17 +1,19 @@
-from pydantic import BaseModel, ConfigDict
-from uuid import UUID
+from pydantic import BaseModel, EmailStr, UUID4
 from datetime import datetime
-from typing import Optional
 
-class UserOut(BaseModel):
-    id: UUID
-    email: str
-    full_name: str
+class UserBase(BaseModel):
+    email: EmailStr
     role: str
-    department_id: Optional[UUID] = None
+
+class UserCreate(UserBase):
+    pass
+
+class UserResponse(UserBase):
+    id: UUID4
     created_at: datetime
-    
-    model_config = ConfigDict(from_attributes=True)
+
+    class Config:
+        from_attributes = True
 
 class UserPromote(BaseModel):
-    role: str # 'asset_manager' | 'department_head'
+    role: str
