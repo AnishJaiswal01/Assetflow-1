@@ -7,8 +7,8 @@ const toneClasses = {
   slate: "bg-slate-100 text-slate-700 ring-slate-200",
 };
 
-const KPICard = ({ label, value, detail, trend, tone = "blue", icon: Icon }) => (
-  <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+const KPICard = ({ label, value, detail, trend, tone = "blue", icon: Icon, onClick }) => {
+  const content = (
     <div className="flex items-start justify-between gap-4">
       <div className="flex items-center gap-2.5">
         {Icon && <Icon size={17} strokeWidth={1.8} className="text-slate-500" aria-hidden="true" />}
@@ -16,9 +16,15 @@ const KPICard = ({ label, value, detail, trend, tone = "blue", icon: Icon }) => 
       </div>
       <span className={`rounded-md px-2 py-1 text-[11px] font-semibold ring-1 ${toneClasses[tone]}`}>{trend}</span>
     </div>
-    <p className="mt-3 text-3xl font-semibold leading-none tracking-tight text-slate-900">{value}</p>
-    <p className="mt-2 text-xs text-slate-500">{detail}</p>
-  </article>
-);
+  );
+
+  const cardContent = <>{content}<p className="mt-3 text-3xl font-semibold leading-none tracking-tight text-slate-900">{value}</p><p className="mt-2 text-xs text-slate-500">{detail}</p></>;
+
+  if (onClick) {
+    return <button type="button" onClick={onClick} className="w-full rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md focus:outline-none focus:ring-3 focus:ring-blue-100">{cardContent}</button>;
+  }
+
+  return <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">{cardContent}</article>;
+};
 
 export default KPICard;
