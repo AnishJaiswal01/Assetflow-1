@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { Bell, Boxes, ClipboardCheck, Gauge, Repeat2, Settings2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import KPICard from "../components/cards/KPICard";
 
 const metrics = [
-  { label: "Available assets", value: "128", detail: "Ready for allocation", trend: "+8 this month", tone: "emerald", icon: Boxes },
-  { label: "Allocated assets", value: "76", detail: "Across 12 departments", trend: "59% of inventory", tone: "blue", icon: Gauge },
-  { label: "Assets in maintenance", value: "4", detail: "2 due back this week", trend: "Needs review", tone: "amber", icon: Settings2 },
-  { label: "Active bookings", value: "9", detail: "3 scheduled for today", trend: "+2 today", tone: "violet", icon: ClipboardCheck },
-  { label: "Pending transfers", value: "3", detail: "Awaiting manager approval", trend: "Action required", tone: "rose", icon: Repeat2 },
-  { label: "Upcoming returns", value: "12", detail: "Due within the next 7 days", trend: "Plan ahead", tone: "slate", icon: Bell },
+  { label: "Available assets", value: "128", detail: "Ready for allocation", trend: "+8 this month", tone: "emerald", icon: Boxes, to: "/assets" },
+  { label: "Allocated assets", value: "76", detail: "Across 12 departments", trend: "59% of inventory", tone: "blue", icon: Gauge, to: "/assets" },
+  { label: "Assets in maintenance", value: "4", detail: "2 due back this week", trend: "Needs review", tone: "amber", icon: Settings2, to: "/maintenance" },
+  { label: "Active bookings", value: "9", detail: "3 scheduled for today", trend: "+2 today", tone: "violet", icon: ClipboardCheck, to: "/bookings" },
+  { label: "Pending transfers", value: "3", detail: "Awaiting manager approval", trend: "Action required", tone: "rose", icon: Repeat2, to: "/allocation" },
+  { label: "Upcoming returns", value: "12", detail: "Due within the next 7 days", trend: "Plan ahead", tone: "slate", icon: Bell, to: "/bookings" },
 ];
 
 const activities = [
@@ -34,13 +35,21 @@ const getRelativeTimestamp = (timestamp, now) => {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [now, setNow] = useState(() => new Date());
   const [lastSyncedAt] = useState(() => new Date(Date.now() - 2 * 60 * 1000));
+  const [toast, setToast] = useState("");
 
   useEffect(() => {
     const intervalId = window.setInterval(() => setNow(new Date()), 60000);
     return () => window.clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    if (!toast) return undefined;
+    const timeoutId = window.setTimeout(() => setToast(""), 4000);
+    return () => window.clearTimeout(timeoutId);
+  }, [toast]);
 
   const greeting = getGreeting(now.getHours());
   const currentDate = new Intl.DateTimeFormat(undefined, {
@@ -61,7 +70,7 @@ const Dashboard = () => {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" aria-label="Asset overview metrics">
-        {metrics.map((metric) => <KPICard key={metric.label} {...metric} />)}
+        {metrics.map(({ to, ...metric }) => <KPICard key={metric.label} {...metric} onClick={() => navigate(to)} />)}
       </section>
 
       <section className="flex flex-col gap-4 rounded-xl border border-rose-200 bg-rose-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between" aria-label="Overdue asset alert">
@@ -72,7 +81,7 @@ const Dashboard = () => {
             <p className="mt-1 text-sm text-rose-700">Follow up with the assigned employees to keep inventory records accurate.</p>
           </div>
         </div>
-        <button type="button" className="shrink-0 text-sm font-semibold text-rose-700 transition-colors hover:text-rose-900">Review overdue assets</button>
+        <button type="button" onClick={() => navigate("/assets")} className="shrink-0 text-sm font-semibold text-rose-700 transition-colors hover:text-rose-900">Review overdue assets</button>
       </section>
 
       <section aria-labelledby="quick-actions-heading">
@@ -80,9 +89,9 @@ const Dashboard = () => {
           <h2 id="quick-actions-heading" className="text-base font-semibold text-slate-900">Quick actions</h2>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
-          <button type="button" className="rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-3 focus:ring-blue-200">Register asset</button>
-          <button type="button" className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-3 focus:ring-slate-200">Book resource</button>
-          <button type="button" className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-3 focus:ring-slate-200">Raise request</button>
+          <button type="button" onClick={() => navigate("/assets")} className="rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-3 focus:ring-blue-200">Register asset</button>
+          <button type="button" onClick={() => navigate("/bookings")} className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-3 focus:ring-slate-200">Book resource</button>
+          <button type="button" onClick={() => navigate("/allocation")} className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-3 focus:ring-slate-200">Raise request</button>
         </div>
       </section>
 
@@ -92,11 +101,11 @@ const Dashboard = () => {
             <h2 id="recent-activity-heading" className="text-base font-semibold text-slate-900">Recent activity</h2>
             <p className="mt-1 text-sm text-slate-500">Latest changes across your workspace</p>
           </div>
-          <button type="button" className="text-sm font-semibold text-blue-700 transition-colors hover:text-blue-800">View all</button>
+          <button type="button" onClick={() => setToast("Activity history is ready for backend integration.")} className="text-sm font-semibold text-blue-700 transition-colors hover:text-blue-800">View all</button>
         </div>
         <ol className="divide-y divide-slate-100">
           {activities.map(({ initials, name, action, meta, tone }) => (
-            <li key={`${name}-${action}`} className="flex items-center gap-4 px-5 py-4">
+            <li key={`${name}-${action}`} className="relative flex items-center gap-4 px-5 py-4 transition duration-200 hover:z-10 hover:-translate-y-0.5 hover:rounded-lg hover:bg-white hover:shadow-md hover:ring-1 hover:ring-slate-300">
               <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${tone}`}>{initials}</span>
               <div className="min-w-0">
                 <p className="truncate text-sm text-slate-700"><span className="font-semibold text-slate-900">{name}</span> {action}</p>
@@ -106,6 +115,7 @@ const Dashboard = () => {
           ))}
         </ol>
       </section>
+      {toast && <div role="status" className="fixed bottom-6 right-6 z-50 max-w-sm rounded-xl border border-slate-200 bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-lg">{toast}</div>}
     </div>
   );
 };
