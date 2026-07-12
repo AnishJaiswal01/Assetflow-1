@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from app.maintenance.models import MaintenanceRequest
 
 from app.db.session import get_db
 
@@ -16,6 +17,11 @@ router = APIRouter(
     tags=["Maintenance"]
 )
 
+@router.get("/")
+def get_maintenance_requests(
+    db: Session = Depends(get_db)
+):
+    return db.query(MaintenanceRequest).all()
 
 @router.post("/")
 def create_request(

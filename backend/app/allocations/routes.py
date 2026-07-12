@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from app.allocations.models import Allocation
 
 from app.db.session import get_db
 from app.allocations.schemas import AllocationCreate
@@ -16,6 +17,10 @@ router = APIRouter(
     prefix="/allocations",
     tags=["Allocations"]
 )
+
+@router.get("/")
+def get_allocations(db: Session = Depends(get_db)):
+    return db.query(Allocation).all()
 
 
 @router.post("/")

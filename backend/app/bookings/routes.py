@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from app.bookings.models import Booking
 
 from app.db.session import get_db
 from app.bookings.schemas import BookingCreate
@@ -10,12 +11,9 @@ router = APIRouter(
     tags=["Bookings"]
 )
 
-
 @router.get("/")
-def get_bookings():
-    return {
-        "message": "Bookings endpoint working"
-    }
+def get_bookings(db: Session = Depends(get_db)):
+    return db.query(Booking).all()
 
 
 @router.post("/")
