@@ -31,6 +31,14 @@ def get_assets(
                 else "Unassigned"
             ),
             purchaseDate=str(asset.purchase_date),
+            serial_number=asset.serial_number,
+            brand=asset.brand,
+            model=asset.model,
+            warranty_expiry=(
+                str(asset.warranty_expiry)
+                if asset.warranty_expiry
+                else None
+            ),
             status=asset.status,
             updated=str(asset.updated_at)
         )
@@ -65,6 +73,14 @@ def get_asset(
         purchaseDate=(
             str(asset.purchase_date)
             if asset.purchase_date
+            else None
+        ),
+        serial_number=asset.serial_number,
+        brand=asset.brand,
+        model=asset.model,
+        warranty_expiry=(
+            str(asset.warranty_expiry)
+            if asset.warranty_expiry
             else None
         ),
         status=asset.status,

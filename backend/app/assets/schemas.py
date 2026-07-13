@@ -12,6 +12,11 @@ class AssetOut(BaseModel):
 
     purchaseDate: Optional[str]
 
+    serial_number: Optional[str]
+    brand: Optional[str]
+    model: Optional[str]
+    warranty_expiry: Optional[str]
+
     status: str
     updated: str
 

@@ -113,7 +113,7 @@ const AssetDetails = () => {
       <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm" aria-labelledby="overview-heading">
         <div className="mb-5"><h2 id="overview-heading" className="text-base font-semibold text-slate-900">Overview</h2><p className="mt-1 text-sm text-slate-500">Ownership, procurement and identification details.</p></div>
         <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2 xl:grid-cols-4">
-          {[['Category', asset.category], ['Department', asset.department], ['Assigned to', asset.assignedTo], ['Purchase date', asset.purchaseDate], ['Warranty expiry', asset.warrantyExpiry], ['Vendor', asset.vendor], ['Serial number', asset.serialNumber], ['Location', asset.location]].map(([term, detail]) => <div key={term}><dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">{term}</dt><dd className="mt-1.5 text-sm font-medium text-slate-800">{detail}</dd></div>)}
+          {[['Category', asset.category], ['Department', asset.department], ['Assigned to', asset.assignedTo], ['Purchase date', asset.purchaseDate], ['Warranty expiry', asset.warranty_expiry], ['Vendor', asset.brand], ['Model', asset.model], ['Serial number', asset.serial_number], ['Location', asset.location]].map(([term, detail]) => <div key={term}><dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">{term}</dt><dd className="mt-1.5 text-sm font-medium text-slate-800">{detail}</dd></div>)}
         </dl>
       </section>
 
